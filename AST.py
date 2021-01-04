@@ -26,13 +26,14 @@ class NodeVisitor(ast.NodeVisitor):
 
 simpletree = ast.parse("1 + 2")
 
-NodeVisitor().visit(simpletree)
 print(ast.dump(simpletree))
+NodeVisitor().visit(simpletree)
+
 
 
 treeWithFunction = ast.parse("""def f():
-    return 'helo'
+    return [1, 2, 3, 4]
     """)
 
-NodeVisitor().visit(treeWithFunction)
 print(ast.dump(treeWithFunction))
+NodeVisitor().visit(treeWithFunction)
