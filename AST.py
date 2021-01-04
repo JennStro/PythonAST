@@ -8,7 +8,20 @@ class NodeVisitor(ast.NodeVisitor):
         print("Binop")
         self.generic_visit(node)
 
-tree = ast.parse("1 + 2")
+    def visit_FunctionDef(self, node: ast.FunctionDef):
+        returnValue = node.body[0].value.value
+        print("public " + str(type(returnValue)) + " " + str(node.name))
+        self.generic_visit(node)
 
-NodeVisitor().visit(tree)
-print(ast.dump(tree))
+
+simpletree = ast.parse("1 + 2")
+
+NodeVisitor().visit(simpletree)
+print(ast.dump(simpletree))
+
+
+treeWithFunction = ast.parse("""def f(): 
+    return 1""")
+
+NodeVisitor().visit(treeWithFunction)
+print(ast.dump(treeWithFunction))
