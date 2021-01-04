@@ -1,27 +1,28 @@
 import ast
 
 class NodeVisitor(ast.NodeVisitor):
+
+    def __init__(self):
+        self.javaProgram = ""
+
     def visit_Constant(self, node: ast.Constant):
         print(str(node.s))
-
-    def visit_BinOp(self, node: ast.BinOp):
-        print("Binop")
-        self.generic_visit(node)
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         returnValue = node.body[0].value.value
         returnType = type(returnValue)
         print(returnType)
         if returnType is int:
-            print("public int " + str(node.name))
+            self.javaProgram += "public int " + str(node.name)
         elif returnType is str:
-            print("public String " + str(node.name))
+            self.javaProgram += "public String " + str(node.name)
         elif returnType is float:
-            print("public double " + str(node.name))
+            self.javaProgram += "public double " + str(node.name)
         else:
-            print("public void " + str(node.name))
+            self.javaProgram += "public void " + str(node.name)
 
         self.generic_visit(node)
+
 
 
 simpletree = ast.parse("1 + 2")
@@ -31,9 +32,12 @@ NodeVisitor().visit(simpletree)
 
 
 
+
 treeWithFunction = ast.parse("""def f():
-    return [1, 2, 3, 4]
+    return 1
     """)
 
 print(ast.dump(treeWithFunction))
-NodeVisitor().visit(treeWithFunction)
+visitor = NodeVisitor()
+visitor.visit(treeWithFunction)
+print(visitor.javaProgram)
