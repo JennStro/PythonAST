@@ -12,13 +12,13 @@ class NodeVisitor(ast.NodeVisitor):
             returnType = type(returnValue)
             print(returnType)
             if returnType is int:
-                self.javaProgram += "public int " + str(node.name)
+                self.javaProgram += "public int " + str(node.name) + " {"
             elif returnType is str:
-                self.javaProgram += "public String " + str(node.name)
+                self.javaProgram += "public String " + str(node.name) + " {"
             elif returnType is float:
-                self.javaProgram += "public double " + str(node.name)
+                self.javaProgram += "public double " + str(node.name) + " {"
         else:
-            self.javaProgram += "public void " + str(node.name)
+            self.javaProgram += "public void " + str(node.name) + " {"
 
         self.generic_visit(node)
 
