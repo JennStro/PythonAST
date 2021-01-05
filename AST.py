@@ -50,7 +50,16 @@ def test_function_returns_string():
     visitor.visit(functionReturnsString)
     assert visitor.javaProgram == "public String f", "Should be: public String f, was " + visitor.javaProgram
 
+def test_function_returns_void():
+    functionReturnsVoid = ast.parse("""def f():
+    print("Hello!")
+    """)
+    visitor = NodeVisitor()
+    visitor.visit(functionReturnsVoid)
+    assert visitor.javaProgram == "public void f", "Should be: public void f, was " + visitor.javaProgram
+
 if __name__ == "__main__":
     test_function_returns_integer()
     test_function_returns_string()
+    test_function_returns_void()
     print("Everything ok.")
