@@ -22,6 +22,13 @@ class NodeVisitor(ast.NodeVisitor):
 
         self.generic_visit(node)
 
+    def visit_Assign(self, node: ast.Assign):
+        value  = node.value.value
+        typeOfValue = type(value)
+        variableName = node.targets[0].id
+        if typeOfValue is int:
+            self.javaProgram += "int " + variableName + " = " + str(value) + ";"
+
 
 treeWithFunction = ast.parse("""def f():
     y = 1
@@ -58,8 +65,15 @@ def test_function_returns_void():
     visitor.visit(functionReturnsVoid)
     assert visitor.javaProgram == "public void f", "Should be: public void f, was " + visitor.javaProgram
 
+def test_assign_integer_variable():
+    integerVariable = ast.parse("a = 10")
+    visitor = NodeVisitor()
+    visitor.visit(integerVariable)
+    assert visitor.javaProgram == "int a = 10;", "Should be: int a = 10;, was " + visitor.javaProgram
+
 if __name__ == "__main__":
     test_function_returns_integer()
     test_function_returns_string()
     test_function_returns_void()
+    test_assign_integer_variable()
     print("Everything ok.")
