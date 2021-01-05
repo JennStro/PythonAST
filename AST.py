@@ -28,6 +28,12 @@ class NodeVisitor(ast.NodeVisitor):
         variableName = node.targets[0].id
         if typeOfValue is int:
             self.javaProgram += "int " + variableName + " = " + str(value) + ";"
+        elif typeOfValue is str:
+            self.javaProgram += "String " + variableName + " = '" + str(value) + "';"
+        elif typeOfValue is float:
+            self.javaProgram += "double " + variableName + " = " + str(value) + ";"
+
+        self.generic_visit(node)
 
 
 treeWithFunction = ast.parse("""def f():
@@ -71,9 +77,16 @@ def test_assign_integer_variable():
     visitor.visit(integerVariable)
     assert visitor.javaProgram == "int a = 10;", "Should be: int a = 10;, was " + visitor.javaProgram
 
+def test_assign_string_variable():
+    stringVariable = ast.parse("a = 'Hei'")
+    visitor = NodeVisitor()
+    visitor.visit(stringVariable)
+    assert visitor.javaProgram == "String a = 'Hei';", "Should be: String a = 'Hei';, was " + visitor.javaProgram
+
 if __name__ == "__main__":
     test_function_returns_integer()
     test_function_returns_string()
     test_function_returns_void()
     test_assign_integer_variable()
+    test_assign_string_variable()
     print("Everything ok.")
