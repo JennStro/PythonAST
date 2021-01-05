@@ -35,10 +35,22 @@ print(visitor.javaProgram)
 
 
 def test_function_returns_integer():
+    functionReturnsInteger = ast.parse("""def f():
+    return 1
+    """)
     visitor = NodeVisitor()
-    visitor.visit(treeWithFunction)
+    visitor.visit(functionReturnsInteger)
     assert visitor.javaProgram == "public int f", "Should be: public int f, was " + visitor.javaProgram
+
+def test_function_returns_string():
+    functionReturnsString = ast.parse("""def f():
+    return "Hello"
+    """)
+    visitor = NodeVisitor()
+    visitor.visit(functionReturnsString)
+    assert visitor.javaProgram == "public String f", "Should be: public String f, was " + visitor.javaProgram
 
 if __name__ == "__main__":
     test_function_returns_integer()
+    test_function_returns_string()
     print("Everything ok.")
