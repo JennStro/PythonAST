@@ -19,7 +19,7 @@ class NodeVisitor(ast.NodeVisitor):
         stringWithArguments = ""
         for argument in arguments:
             argumentName = argument.arg
-            stringWithArguments += str(self.environment[argumentName]) + " " + argumentName
+            stringWithArguments += str(self.convertTypeToString(self.environment[argumentName])) + " " + argumentName
 
         if isinstance(lastStatementInBody, ast.Return):
             returnValue = lastStatementInBody.value.value
@@ -42,6 +42,8 @@ class NodeVisitor(ast.NodeVisitor):
 
         self.environment[variableName] = typeOfValue
         print(self.environment)
+        print(value)
+        #self.javaProgram += self.convertTypeToString(typeOfValue) + " " + variableName + " = " + str(value) + ";\n"
 
         if typeOfValue is int:
             self.javaProgram += "int " + variableName + " = " + str(value) + ";\n"
@@ -51,6 +53,16 @@ class NodeVisitor(ast.NodeVisitor):
             self.javaProgram += "double " + variableName + " = " + str(value) + ";\n"
 
         self.generic_visit(node)
+
+    def convertTypeToString(self, theType):
+        if theType is int:
+            return "int"
+        elif theType is str:
+            return "String"
+        elif theType is float:
+            return "double"
+        else:
+            return "void"
 
 
 treeWithFunction = ast.parse("""def f():
