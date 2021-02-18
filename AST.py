@@ -18,7 +18,7 @@ class NodeVisitor(ast.NodeVisitor):
             elif returnType is float:
                 self.javaProgram += "public double " + str(node.name)
         else:
-            self.javaProgram += "public void " + str(node.name)
+            self.javaProgram += "public void " + str(node.name)+"()"
 
         self.generic_visit(node)
 
@@ -27,11 +27,11 @@ class NodeVisitor(ast.NodeVisitor):
         typeOfValue = type(value)
         variableName = node.targets[0].id
         if typeOfValue is int:
-            self.javaProgram += "int " + variableName + " = " + str(value) + ";"
+            self.javaProgram += "int " + variableName + " = " + str(value) + ";\n"
         elif typeOfValue is str:
-            self.javaProgram += "String " + variableName + " = '" + str(value) + "';"
+            self.javaProgram += "String " + variableName + " = '" + str(value) + "';\n"
         elif typeOfValue is float:
-            self.javaProgram += "double " + variableName + " = " + str(value) + ";"
+            self.javaProgram += "double " + variableName + " = " + str(value) + ";\n"
 
         self.generic_visit(node)
 
@@ -71,28 +71,28 @@ def test_function_returns_void():
     """)
     visitor = NodeVisitor()
     visitor.visit(functionReturnsVoid)
-    assert visitor.javaProgram == "public void f", "Should be: public void f, was " + visitor.javaProgram
+    assert visitor.javaProgram == "public void f()", "Should be: public void f, was " + visitor.javaProgram
 
 
 def test_assign_integer_variable():
     integerVariable = ast.parse("a = 10")
     visitor = NodeVisitor()
     visitor.visit(integerVariable)
-    assert visitor.javaProgram == "int a = 10;", "Should be: int a = 10;, was " + visitor.javaProgram
+    assert visitor.javaProgram == "int a = 10;\n", "Should be: int a = 10;\n, was " + visitor.javaProgram
 
 
 def test_assign_string_variable():
     stringVariable = ast.parse("a = 'Hei'")
     visitor = NodeVisitor()
     visitor.visit(stringVariable)
-    assert visitor.javaProgram == "String a = 'Hei';", "Should be: String a = 'Hei';, was " + visitor.javaProgram
+    assert visitor.javaProgram == "String a = 'Hei';\n", "Should be: String a = 'Hei';\n, was " + visitor.javaProgram
 
 
-def test_function_arguments():
-    functionWithOneArgument = ast.parse("x = 1 \ndef f(x):\n\tprint('Hello world!')")
+def test_function_after_assignemnt():
+    functionWithNoArgument = ast.parse("x = 1 \ndef f():\n\tprint('Hello world!')")
     visitor = NodeVisitor()
-    visitor.visit(functionWithOneArgument)
-    assert visitor.javaProgram == "int x = 1; public void f(int x)", "Should be: int x = 1; public void f(int x), was " + visitor.javaProgram
+    visitor.visit(functionWithNoArgument)
+    assert visitor.javaProgram == "int x = 1;\npublic void f()", "Should be: int x = 1;\npublic void f(), was " + visitor.javaProgram
 
 
 if __name__ == "__main__":
@@ -101,5 +101,5 @@ if __name__ == "__main__":
     test_function_returns_void()
     test_assign_integer_variable()
     test_assign_string_variable()
-    test_function_arguments()
+    test_function_after_assignemnt()
     print("Everything ok.")
