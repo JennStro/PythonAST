@@ -1,5 +1,6 @@
 import ast
 
+
 class NodeVisitor(ast.NodeVisitor):
 
     def __init__(self):
@@ -40,7 +41,7 @@ treeWithFunction = ast.parse("""def f():
     return 1
     """)
 
-#print(ast.dump(treeWithFunction))
+# print(ast.dump(treeWithFunction))
 visitor = NodeVisitor()
 visitor.visit(treeWithFunction)
 print(visitor.javaProgram)
@@ -54,6 +55,7 @@ def test_function_returns_integer():
     visitor.visit(functionReturnsInteger)
     assert visitor.javaProgram == "public int f", "Should be: public int f, was " + visitor.javaProgram
 
+
 def test_function_returns_string():
     functionReturnsString = ast.parse("""def f():
     return "Hello"
@@ -61,6 +63,7 @@ def test_function_returns_string():
     visitor = NodeVisitor()
     visitor.visit(functionReturnsString)
     assert visitor.javaProgram == "public String f", "Should be: public String f, was " + visitor.javaProgram
+
 
 def test_function_returns_void():
     functionReturnsVoid = ast.parse("""def f():
@@ -70,11 +73,13 @@ def test_function_returns_void():
     visitor.visit(functionReturnsVoid)
     assert visitor.javaProgram == "public void f", "Should be: public void f, was " + visitor.javaProgram
 
+
 def test_assign_integer_variable():
     integerVariable = ast.parse("a = 10")
     visitor = NodeVisitor()
     visitor.visit(integerVariable)
     assert visitor.javaProgram == "int a = 10;", "Should be: int a = 10;, was " + visitor.javaProgram
+
 
 def test_assign_string_variable():
     stringVariable = ast.parse("a = 'Hei'")
@@ -82,10 +87,19 @@ def test_assign_string_variable():
     visitor.visit(stringVariable)
     assert visitor.javaProgram == "String a = 'Hei';", "Should be: String a = 'Hei';, was " + visitor.javaProgram
 
+
+def test_function_arguments():
+    functionWithOneArgument = ast.parse("x = 1 \ndef f(x):\n\tprint('Hello world!')")
+    visitor = NodeVisitor()
+    visitor.visit(functionWithOneArgument)
+    assert visitor.javaProgram == "int x = 1; public void f(int x)", "Should be: int x = 1; public void f(int x), was " + visitor.javaProgram
+
+
 if __name__ == "__main__":
     test_function_returns_integer()
     test_function_returns_string()
     test_function_returns_void()
     test_assign_integer_variable()
     test_assign_string_variable()
+    test_function_arguments()
     print("Everything ok.")
