@@ -1,19 +1,25 @@
 import ast
 
-environment = {}
-
 class NodeVisitor(ast.NodeVisitor):
 
     def __init__(self):
         self.javaProgram = ""
+        self.environment = {}
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         lastStatementInBody = node.body[-1]
         arguments = node.args.args
 
-        print(ast.dump(node))
+        #print(ast.dump(node))
         print(ast.dump(node.args))
-        print(node.args.args)
+        print(arguments)
+
+        print(self.environment)
+
+        stringWithArguments = ""
+        for argument in arguments:
+            argumentName = argument.arg
+            stringWithArguments += f" {argumentName}: " + self.environment[argumentName]
 
         if isinstance(lastStatementInBody, ast.Return):
             returnValue = lastStatementInBody.value.value
@@ -25,7 +31,7 @@ class NodeVisitor(ast.NodeVisitor):
             elif returnType is float:
                 self.javaProgram += "public double " + str(node.name)
         else:
-            self.javaProgram += "public void " + str(node.name)+"()"
+            self.javaProgram += "public void " + str(node.name)+"(" + stringWithArguments + ")"
 
         self.generic_visit(node)
 
@@ -34,8 +40,8 @@ class NodeVisitor(ast.NodeVisitor):
         typeOfValue = type(value)
         variableName = node.targets[0].id
 
-        environment[variableName] = typeOfValue
-        print(environment)
+        self.environment[variableName] = typeOfValue
+        print(self.environment)
 
         if typeOfValue is int:
             self.javaProgram += "int " + variableName + " = " + str(value) + ";\n"
