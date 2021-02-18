@@ -19,7 +19,10 @@ class NodeVisitor(ast.NodeVisitor):
         stringWithArguments = ""
         for argument in arguments:
             argumentName = argument.arg
-            stringWithArguments += str(self.convertTypeToString(self.environment[argumentName])) + " " + argumentName
+            stringWithArguments += str(self.convertTypeToString(self.environment[argumentName])) + " " + argumentName + ", "
+
+        #Do not want the last ","
+        stringWithArguments = stringWithArguments[:-2]
 
         if isinstance(lastStatementInBody, ast.Return):
             returnValue = lastStatementInBody.value.value
@@ -124,6 +127,12 @@ def test_function_one_argument():
     visitor.visit(functionWithOneArgument)
     assert visitor.javaProgram == "int x = 1;\npublic void f(int x)", "Should be: int x = 1;\npublic void f(int x), was " + visitor.javaProgram
 
+def test_function_two_arguments():
+    functionWithTwoArguments = ast.parse("x = 1 \ny = 3\ndef f(x, y):\n\tprint('Hello world!')")
+    visitor = NodeVisitor()
+    visitor.visit(functionWithTwoArguments)
+    assert visitor.javaProgram == "int x = 1;\nint y = 3;\npublic void f(int x, int y)", "int x = 1;\nint y = 3;\npublic void f(int x, int y), was " + visitor.javaProgram
+
 
 if __name__ == "__main__":
     test_function_returns_integer()
@@ -133,4 +142,5 @@ if __name__ == "__main__":
     test_assign_string_variable()
     test_function_after_assignemnt()
     test_function_one_argument()
+    test_function_two_arguments()
     print("Everything ok.")

@@ -1,5 +1,6 @@
 x = 1
-def f(x):
+a = "hei"
+def f(x, a):
     print("Hello!")
 
 x = 2
