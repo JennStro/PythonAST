@@ -53,7 +53,7 @@ class NodeVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-treeWithFunction = ast.parse("""def f(x):
+treeWithFunction = ast.parse("""def f():
     y = 1
     return 1
     """)
