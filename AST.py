@@ -19,7 +19,7 @@ class NodeVisitor(ast.NodeVisitor):
         stringWithArguments = ""
         for argument in arguments:
             argumentName = argument.arg
-            stringWithArguments += f" {argumentName}: " + self.environment[argumentName]
+            stringWithArguments += str(self.environment[argumentName]) + " " + argumentName
 
         if isinstance(lastStatementInBody, ast.Return):
             returnValue = lastStatementInBody.value.value
@@ -111,6 +111,12 @@ def test_function_after_assignemnt():
     visitor.visit(functionWithNoArgument)
     assert visitor.javaProgram == "int x = 1;\npublic void f()", "Should be: int x = 1;\npublic void f(), was " + visitor.javaProgram
 
+def test_function_one_argument():
+    functionWithOneArgument = ast.parse("x = 1 \ndef f(x):\n\tprint('Hello world!')")
+    visitor = NodeVisitor()
+    visitor.visit(functionWithOneArgument)
+    assert visitor.javaProgram == "int x = 1;\npublic void f(int x)", "Should be: int x = 1;\npublic void f(int x), was " + visitor.javaProgram
+
 
 if __name__ == "__main__":
     test_function_returns_integer()
@@ -119,4 +125,5 @@ if __name__ == "__main__":
     test_assign_integer_variable()
     test_assign_string_variable()
     test_function_after_assignemnt()
+    test_function_one_argument()
     print("Everything ok.")
