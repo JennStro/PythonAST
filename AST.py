@@ -1,5 +1,6 @@
 import ast
 
+environment = {}
 
 class NodeVisitor(ast.NodeVisitor):
 
@@ -8,6 +9,12 @@ class NodeVisitor(ast.NodeVisitor):
 
     def visit_FunctionDef(self, node: ast.FunctionDef):
         lastStatementInBody = node.body[-1]
+        arguments = node.args.args
+
+        print(ast.dump(node))
+        print(ast.dump(node.args))
+        print(node.args.args)
+
         if isinstance(lastStatementInBody, ast.Return):
             returnValue = lastStatementInBody.value.value
             returnType = type(returnValue)
@@ -26,6 +33,10 @@ class NodeVisitor(ast.NodeVisitor):
         value = node.value.value
         typeOfValue = type(value)
         variableName = node.targets[0].id
+
+        environment[variableName] = typeOfValue
+        print(environment)
+
         if typeOfValue is int:
             self.javaProgram += "int " + variableName + " = " + str(value) + ";\n"
         elif typeOfValue is str:
@@ -36,12 +47,12 @@ class NodeVisitor(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-treeWithFunction = ast.parse("""def f():
+treeWithFunction = ast.parse("""def f(x):
     y = 1
     return 1
     """)
 
-# print(ast.dump(treeWithFunction))
+print(ast.dump(treeWithFunction, annotate_fields=True))
 visitor = NodeVisitor()
 visitor.visit(treeWithFunction)
 print(visitor.javaProgram)
