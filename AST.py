@@ -10,20 +10,19 @@ class NodeVisitor(ast.NodeVisitor):
         if isinstance(lastStatementInBody, ast.Return):
             returnValue = lastStatementInBody.value.value
             returnType = type(returnValue)
-            print(returnType)
             if returnType is int:
-                self.javaProgram += "public int " + str(node.name) + " {"
+                self.javaProgram += "public int " + str(node.name)
             elif returnType is str:
-                self.javaProgram += "public String " + str(node.name) + " {"
+                self.javaProgram += "public String " + str(node.name)
             elif returnType is float:
-                self.javaProgram += "public double " + str(node.name) + " {"
+                self.javaProgram += "public double " + str(node.name)
         else:
-            self.javaProgram += "public void " + str(node.name) + " {"
+            self.javaProgram += "public void " + str(node.name)
 
         self.generic_visit(node)
 
     def visit_Assign(self, node: ast.Assign):
-        value  = node.value.value
+        value = node.value.value
         typeOfValue = type(value)
         variableName = node.targets[0].id
         if typeOfValue is int:
@@ -41,7 +40,7 @@ treeWithFunction = ast.parse("""def f():
     return 1
     """)
 
-print(ast.dump(treeWithFunction))
+#print(ast.dump(treeWithFunction))
 visitor = NodeVisitor()
 visitor.visit(treeWithFunction)
 print(visitor.javaProgram)
