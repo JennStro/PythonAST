@@ -11,10 +11,10 @@ class NodeVisitor(ast.NodeVisitor):
         arguments = node.args.args
 
         #print(ast.dump(node))
-        print(ast.dump(node.args))
-        print(arguments)
+        #print(ast.dump(node.args))
+        #print(arguments)
 
-        print(self.environment)
+        #print(self.environment)
 
         stringWithArguments = ""
         for argument in arguments:
@@ -41,8 +41,8 @@ class NodeVisitor(ast.NodeVisitor):
         variableName = node.targets[0].id
 
         self.environment[variableName] = typeOfValue
-        print(self.environment)
-        print(value)
+        #print(self.environment)
+        #print(value)
         #self.javaProgram += self.convertTypeToString(typeOfValue) + " " + variableName + " = " + str(value) + ";\n"
 
         if typeOfValue is int:
@@ -64,15 +64,10 @@ class NodeVisitor(ast.NodeVisitor):
         else:
             return "void"
 
-
-treeWithFunction = ast.parse("""def f():
-    y = 1
-    return 1
-    """)
-
-print(ast.dump(treeWithFunction, annotate_fields=True))
 visitor = NodeVisitor()
-visitor.visit(treeWithFunction)
+
+f = open("test.txt", "r")
+visitor.visit(ast.parse(f.read()))
 print(visitor.javaProgram)
 
 
